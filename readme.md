@@ -11,8 +11,8 @@ A planilha foi criada para:
 - Ajudar no acompanhamento de indicadores como dividend yield, rentabilidade e P/VP.
 - Servir como ferramenta de apoio para investidores.
 - ## Imagens do Projeto
-![Logo do Projeto](imagens/Investimentos.png)
-![Logo do Projeto](imagens/Investimentos2.png)
+![Logo do Projeto](Imagens/projeto01.png)
+![Logo do Projeto](Imagens/projeto02.png)
 
 ## 📂 Conteúdo
 
