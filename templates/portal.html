@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pandora | Portal Palworld</title>
+  <style>
+    :root { color-scheme: dark; font-family: system-ui, sans-serif; background: #090b19; color: #f5f2ff; --violet: #a78bfa; --cyan: #67e8f9; --gold: #f4cb78; --green: #8ee6c0; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-height: 100vh; background: radial-gradient(ellipse at 82% 0%, #27204b 0, transparent 38%), radial-gradient(ellipse at 8% 30%, #0d2937 0, transparent 34%), #090b19; }
+    header, main { width: min(1120px, calc(100% - 36px)); margin: auto; }
+    header { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 22px 0; border-bottom: 1px solid #393450; }
+    h1, h2, h3 { margin-top: 0; }
+    h1 { margin-bottom: 3px; font-size: 1.12rem; letter-spacing: .16em; color: var(--gold); }
+    h2 { margin-top: 36px; font-size: 1.5rem; }
+    h3 { color: #ded5ff; }
+    .marca { display: flex; align-items: center; gap: 12px; }
+    .simbolo { width: 42px; height: 42px; display: grid; place-items: center; border: 1px solid #b7a3ff; border-radius: 50%; color: var(--cyan); box-shadow: 0 0 20px #8b5cf655, inset 0 0 15px #8b5cf633; font-size: 1.2rem; }
+    .grade { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 16px; }
+    .cartao { background: linear-gradient(145deg, #1a1930ed, #111b2aef); border: 1px solid #494264; border-radius: 14px; padding: 19px; box-shadow: 0 12px 30px #03040a44; }
+    .muted, small { color: #c1bbd5; }
+    .preco { font-size: 1.25rem; font-weight: 700; color: var(--green); }
+    button, .botao { background: linear-gradient(100deg, #a78bfa, #67e8f9); color: #131326; font-weight: 800; border: 0; border-radius: 8px; padding: 10px 14px; cursor: pointer; text-decoration: none; display: inline-block; }
+    button:hover, .botao:hover { filter: brightness(1.1); }
+    input, textarea { box-sizing: border-box; width: 100%; background: #0d1020; color: #f5f2ff; border: 1px solid #625b80; border-radius: 7px; padding: 9px; margin: 6px 0 10px; }
+    textarea { min-height: 78px; resize: vertical; }
+    label { display: block; font-size: .9rem; }
+    form { margin-top: 12px; }
+    .mensagem { border-radius: 8px; padding: 10px 14px; margin: 12px 0; background: #25243b; }
+    .mensagem.erro { border-left: 4px solid #ff858b; }
+    .mensagem.sucesso { border-left: 4px solid var(--green); }
+    .mensagem.aviso { border-left: 4px solid var(--gold); }
+    .linha { border-top: 1px solid #494264; margin-top: 12px; padding-top: 12px; }
+    progress { width: 100%; height: 12px; accent-color: var(--green); }
+    .hero { position: relative; overflow: hidden; min-height: 300px; margin: 30px 0; padding: clamp(24px, 6vw, 58px); display: flex; align-items: center; border: 1px solid #574f7c; border-radius: 20px; background: radial-gradient(circle at 82% 45%, #99f6e433 0 5%, transparent 6%), radial-gradient(ellipse at 82% 40%, #4f46e544, transparent 38%), radial-gradient(ellipse at 100% 100%, #0e749044, transparent 45%), linear-gradient(120deg, #17162e, #101a2d); }
+    .hero:after { content: "✦    ·   ✧     ·        ✦     ·   ✧"; position: absolute; inset: 20px 20px auto auto; width: 45%; height: 100%; color: #d7ccff88; font-size: 1.4rem; line-height: 3.8; letter-spacing: 1.2rem; pointer-events: none; }
+    .hero-conteudo { position: relative; z-index: 1; max-width: 620px; }
+    .selo { display: inline-block; padding: 6px 10px; border: 1px solid #7dd3fc66; border-radius: 999px; color: var(--cyan); text-transform: uppercase; letter-spacing: .12em; font-size: .72rem; }
+    .hero h2 { margin: 16px 0 10px; font-size: clamp(2rem, 6vw, 3.4rem); line-height: 1.02; letter-spacing: -.04em; }
+    .hero h2 span { color: var(--gold); }
+    .hero p { max-width: 540px; line-height: 1.6; color: #d4d0e3; }
+    .nota { color: var(--gold); font-size: .9rem; }
+    .mapa-svg { width: 100%; min-height: 280px; display: block; background: radial-gradient(ellipse at 50% 50%, #124454aa, #0b1325 75%); border: 1px solid #53627a; border-radius: 12px; }
+    .mapa-grade { stroke: #63728755; stroke-width: 1; }
+    .mapa-eixo { fill: #c1bbd5; font: 12px system-ui, sans-serif; }
+    .pino-jogador { fill: var(--cyan); stroke: #f3fbff; stroke-width: 2; cursor: pointer; filter: drop-shadow(0 0 7px #67e8f9); }
+    .nome-jogador { fill: #f5f2ff; font: 13px system-ui, sans-serif; paint-order: stroke; stroke: #101329; stroke-width: 4px; stroke-linejoin: round; pointer-events: none; }
+    .mapa-dados { display: grid; grid-template-columns: minmax(0, 3fr) minmax(180px, 1fr); gap: 16px; }
+    @media (max-width: 700px) { .mapa-dados { grid-template-columns: 1fr; } }
+    footer { width: min(1120px, calc(100% - 36px)); margin: 42px auto 24px; color: #bcb6d0; font-size: .9rem; border-top: 1px solid #393450; padding-top: 20px; }
+    @media (max-width: 550px) { header { align-items: flex-start; flex-direction: column; } .hero { min-height: 260px; } }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="marca">
+      <div class="simbolo" aria-hidden="true">✧</div>
+      <div>
+        <h1>PANDORA</h1>
+        <div class="muted">Portal da comunidade Palworld</div>
+      </div>
+    </div>
+    {% if usuario %}
+      <div>
+        <span>Olá, {{ usuario }}</span>
+        <form method="post" action="{{ url_for('sair') }}" style="display:inline">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+          <button type="submit">Sair</button>
+        </form>
+      </div>
+    {% else %}
+      <a class="botao" href="{{ url_for('login') }}">Entrar com Discord</a>
+    {% endif %}
+  </header>
+
+  <main>
+    {% with mensagens = get_flashed_messages(with_categories=true) %}
+      {% for categoria, mensagem in mensagens %}
+        <div class="mensagem {{ categoria }}">{{ mensagem }}</div>
+      {% endfor %}
+    {% endwith %}
+
+    <section class="hero">
+      <div class="hero-conteudo">
+        <span class="selo">Um mundo de mistérios</span>
+        <h2>Além do portal,<br><span>uma nova lenda.</span></h2>
+        <p>Entre numa fronteira viva de descobertas, criaturas e desafios. Os antigos mistérios de Pandora guardam perigos — e a esperança de quem escolhe explorá-los.</p>
+        <p class="nota">Sua jornada. Sua comunidade. Seu mundo.</p>
+      </div>
+    </section>
+
+    <section>
+      <h2>Mapa vivo de Pandora</h2>
+      <p class="muted">Posições dos jogadores conectados, recebidas da API oficial do servidor. Atualização automática a cada 15 segundos.</p>
+      {% if usuario %}
+        <div class="cartao mapa-dados">
+          <div>
+            <svg id="mapa-jogadores" class="mapa-svg" viewBox="0 0 1000 500" role="img" aria-label="Radar de posições de jogadores por coordenadas do jogo">
+              <g id="mapa-grade"></g>
+              <g id="mapa-pinos"></g>
+            </svg>
+          </div>
+          <aside>
+            <h3>Exploradores online</h3>
+            <p id="mapa-status" class="muted" aria-live="polite">Consultando o servidor…</p>
+            <div id="jogador-selecionado" class="muted">Selecione um ponto para ver os detalhes.</div>
+            <small id="mapa-horario"></small>
+            <p><small>Radar de coordenadas ao vivo; sem terreno ou estruturas do mapa nesta versão.</small></p>
+          </aside>
+        </div>
+        <script src="{{ url_for('static', filename='mapa.js') }}" defer></script>
+      {% else %}
+        <div class="cartao">
+          <p>Entre com o Discord para acompanhar quem está explorando o mundo.</p>
+          <a class="botao" href="{{ url_for('login') }}">Entrar para ver o mapa</a>
+        </div>
+      {% endif %}
+    </section>
+
+    <section>
+      <h2>Loja da comunidade</h2>
+      <p class="muted">Pagamentos processados pelo Mercado Pago. O portal não armazena dados de cartão.</p>
+      <div class="grade">
+        {% for produto in produtos %}
+          <article class="cartao">
+            <h3>{{ produto.titulo }}</h3>
+            <p>{{ produto.descricao or "Benefício da comunidade." }}</p>
+            <p class="preco">{{ produto.preco_centavos|moeda_brasileira }}</p>
+            {% if produto.dias_vip == -1 %}
+              <p class="muted">Cargo VIP permanente no Discord.</p>
+            {% elif produto.dias_vip > 0 %}
+              <p class="muted">Cargo VIP no Discord por {{ produto.dias_vip }} dias.</p>
+            {% endif %}
+            {% if usuario %}
+              <form method="post" action="{{ url_for('comprar', produto_id=produto.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <button type="submit">Comprar com Mercado Pago</button>
+              </form>
+            {% else %}
+              <a class="botao" href="{{ url_for('login') }}">Entrar para comprar</a>
+            {% endif %}
+          </article>
+        {% else %}
+          <p class="muted">A loja ainda não tem produtos. A equipe poderá cadastrá-los pelo comando /loja-criar no Discord.</p>
+        {% endfor %}
+      </div>
+    </section>
+
+    <section>
+      <h2>Missões da comunidade</h2>
+      <p class="muted">Envie sua comprovação; a equipe valida pelo Discord. Prêmios dentro do jogo são entregues pelos administradores.</p>
+      <div class="grade">
+        {% for missao in missoes %}
+          <article class="cartao">
+            <h3>{{ missao.titulo }}</h3>
+            <p>{{ missao.descricao }}</p>
+            <p><strong>Prêmio:</strong> {{ missao.premio }}</p>
+            {% if usuario %}
+              <form method="post" action="{{ url_for('enviar_reivindicacao', missao_id=missao.id) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <label for="prova-{{ missao.id }}">Conte como concluiu e inclua evidências:</label>
+                <textarea id="prova-{{ missao.id }}" name="prova" minlength="10" maxlength="1000" required></textarea>
+                <button type="submit">Enviar para análise</button>
+              </form>
+            {% else %}
+              <a class="botao" href="{{ url_for('login') }}">Entrar para participar</a>
+            {% endif %}
+          </article>
+        {% else %}
+          <p class="muted">Ainda não há missões publicadas.</p>
+        {% endfor %}
+      </div>
+    </section>
+
+    {% if usuario %}
+      <section>
+        <h2>Meu painel</h2>
+        <div class="grade">
+          <article class="cartao">
+            <h3>Progresso de exploração</h3>
+            {% for meta in progresso %}
+              <div class="linha">
+                <strong>{{ meta.titulo }}</strong>
+                <progress value="{{ meta.quantidade }}" max="{{ meta.total }}" aria-label="{{ meta.titulo }}: {{ meta.quantidade }} de {{ meta.total }}"></progress>
+                <span class="muted">{{ meta.quantidade }}/{{ meta.total }}</span>
+              </div>
+            {% else %}
+              <p class="muted">A equipe ainda não cadastrou metas de exploração.</p>
+            {% endfor %}
+            <small>A equipe pode atualizar esses contadores pelos comandos do Discord.</small>
+          </article>
+          <article class="cartao">
+            <h3>Minhas compras</h3>
+            {% for pedido in pedidos %}
+              <div class="linha">
+                <strong>{{ pedido.titulo_produto }}</strong><br>
+                <span class="muted">Pagamento: {{ pedido.status }} · VIP: {{ pedido.vip_status }}</span>
+              </div>
+            {% else %}
+              <p class="muted">Suas compras aparecerão aqui.</p>
+            {% endfor %}
+          </article>
+          <article class="cartao">
+            <h3>Minhas missões</h3>
+            {% for item in reivindicacoes %}
+              <div class="linha">
+                <strong>{{ item.titulo }}</strong> · {{ item.status }}<br>
+                <span class="muted">Prêmio: {{ item.premio }}</span>
+              </div>
+            {% else %}
+              <p class="muted">Suas comprovações aparecerão aqui.</p>
+            {% endfor %}
+          </article>
+        </div>
+      </section>
+    {% endif %}
+
+    {% if eh_admin %}
+      <section class="cartao" style="margin-top:24px">
+        <h2>Administração pelo Discord</h2>
+        <p>Use os comandos de equipe no bot do portal para criar produtos e missões, revisar comprovações e administrar o servidor.</p>
+        <p class="muted">ID do Discord: {{ discord_id }}</p>
+      </section>
+    {% endif %}
+  </main>
+  <footer>
+    Pandora é uma identidade visual original para a comunidade; não utiliza artes ou personagens de outras franquias. O portal é independente do jogo. A confirmação de missões e a entrega de itens continuam sendo realizadas pela equipe; o servidor precisa oferecer os recursos de integração configurados.
+  </footer>
+</body>
+</html>

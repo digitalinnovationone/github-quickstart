@@ -1,0 +1,4 @@
+Flask>=3.1,<4
+discord.py>=2.5,<3
+gunicorn>=23,<24; platform_system != "Windows"
+python-dotenv>=1.0,<2
